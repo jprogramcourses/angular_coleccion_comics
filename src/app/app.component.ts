@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'clientes-app';
+  title = 'Aplicación de comics';
+
+  marvel: string = 'Comics Marvel';
+  autor: string = 'Juan Díaz Sanjurjo';
 }
