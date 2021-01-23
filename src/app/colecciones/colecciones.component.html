@@ -1,0 +1,22 @@
+<div class="card border-primary mb-3" >
+    <div class="card-header">Colecciones</div>
+    <div class="card-body text-primary">
+        <h5 class="card-title">Listado de colecciones</h5>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Números</th>
+                    <th>Números disponibles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let coleccion of colecciones">
+                    <td>{{coleccion.nombre}}</td>
+                    <td>{{coleccion.numerosTotales}}</td>
+                    <td>{{coleccion.numerosDisponibles}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
