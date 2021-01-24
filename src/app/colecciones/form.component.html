@@ -1,0 +1,40 @@
+<div class="card bg-dark text-white">
+    <div class="card-header">{{titulo}}</div>
+    <div class="card-body">
+        <form (ngSubmit) = "create()">
+            <div class="form-group row">
+                <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.nombre" name="nombre" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="numerosTotales" class="col-form-label col-sm-2">Números totales</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.numerosTotales" name="numerosTotales" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="numerosDisponibles" class="col-form-label col-sm-2">Números disponibles</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.numerosDisponibles" name="numerosDisponibles" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="listadoNumeros" class="col-form-label col-sm-2">Listado de números</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.listadoNumeros" name="listadoNumeros" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary" role="button">Crear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { COLECCION } from './colecciones.json';
 import { Coleccion } from './coleccion';
 import { Observable, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 export class ColeccionService {
 
   private urlEndPoint: string = 'http://localhost:8080/apicolec/colecciones';
+  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient) { }
 
@@ -24,5 +25,9 @@ export class ColeccionService {
     return this.http.get(this.urlEndPoint).pipe(
       map(response => response as Coleccion[])
     );
+  }
+
+  create(coleccion : Coleccion) : Observable<Coleccion>{
+    return this.http.post<Coleccion>(this.urlEndPoint, coleccion, {headers: this.httpHeaders});
   }
 }
