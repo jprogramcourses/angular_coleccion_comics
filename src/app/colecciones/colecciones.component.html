@@ -2,12 +2,17 @@
     <div class="card-header">Colecciones</div>
     <div class="card-body text-primary">
         <h5 class="card-title">Listado de colecciones</h5>
-        <table class="table table-bordered table-striped">
+        <div *ngIf="colecciones?.length == 0" class="alert alert-info">
+            No hay registros en la tabla
+        </div>
+        <table class="table table-bordered table-striped" *ngIf="colecciones?.length > 0">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Números</th>
                     <th>Números disponibles</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,6 +20,8 @@
                     <td>{{coleccion.nombre}}</td>
                     <td>{{coleccion.numerosTotales}}</td>
                     <td>{{coleccion.numerosDisponibles}}</td>
+                    <td><button type="button" name="editar" class="btn btn-primary" [routerLink] = "['/colecciones/form/', coleccion.idColeccion]">Editar</button></td>
+                    <td><button type="button" name="eliminar" class="btn btn-danger" (click) = 'delete(coleccion)'>Eliminar</button></td>
                 </tr>
             </tbody>
         </table>

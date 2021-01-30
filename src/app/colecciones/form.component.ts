@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Coleccion } from './coleccion';
 import { ColeccionService } from './coleccion.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-form',
@@ -14,15 +15,38 @@ export class FormComponent implements OnInit {
   titulo: string = 'Nueva Colección';
 
   constructor(private coleccionService: ColeccionService,
-    private router: Router) { }
+    private router: Router,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.cargarColeccion();
+  }
+
+  cargarColeccion() : void{
+    this.activatedRoute.params.subscribe(params => {
+      let id = params['id'];
+      if(id){
+        this.coleccionService.getColeccion(id).subscribe((coleccion) => this.coleccion = coleccion);
+      }
+    })
   }
 
   public create(): void {
     this.coleccionService.create(this.coleccion).subscribe(
-      response => this.router.navigate(['/colecciones'])
+      coleccion => {
+        this.router.navigate(['/colecciones']);
+        swal.fire('Nueva colección', `Colección ${coleccion.nombre} creada correctamente`, 'success');
+      }
     );
+  }
+
+  update(): void{
+    this.coleccionService.update(this.coleccion).subscribe(
+      coleccion => {
+        this.router.navigate(['/colecciones']);
+        swal.fire('Colección actualizada', `La colección ${coleccion.nombre} se ha actualizado`, 'success');
+      }
+    )
   }
 
 }

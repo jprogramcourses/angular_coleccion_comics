@@ -15,7 +15,8 @@ const routes: Routes = [
   { path: '', redirectTo: '/colecciones', pathMatch: 'full' },
   { path: 'directivas', component: DirectivaComponent },
   { path: 'colecciones', component: ColeccionesComponent },
-  { path: 'colecciones/form', component: FormComponent }
+  { path: 'colecciones/form', component: FormComponent },
+  { path: 'colecciones/form/:id', component: FormComponent }
 ]
 
 @NgModule({

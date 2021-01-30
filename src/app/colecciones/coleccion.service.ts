@@ -30,4 +30,18 @@ export class ColeccionService {
   create(coleccion : Coleccion) : Observable<Coleccion>{
     return this.http.post<Coleccion>(this.urlEndPoint, coleccion, {headers: this.httpHeaders});
   }
+
+  getColeccion(id): Observable<Coleccion>{
+    return this.http.get<Coleccion>(`${this.urlEndPoint}/${id}`);
+  }
+
+  update(coleccion: Coleccion): Observable<Coleccion>{
+    return this.http.put<Coleccion>(`${this.urlEndPoint}/${coleccion.idColeccion}`, 
+                          coleccion,
+                          {headers: this.httpHeaders});
+  }
+
+  delete(id: number): Observable<Coleccion>{
+    return this.http.delete<Coleccion>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders});
+  }
 }
