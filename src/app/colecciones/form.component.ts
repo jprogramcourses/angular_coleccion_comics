@@ -11,8 +11,9 @@ import swal from 'sweetalert2';
 export class FormComponent implements OnInit {
 
   coleccion: Coleccion = new Coleccion();
-
   titulo: string = 'Nueva Colección';
+
+  errores: string[];
 
   constructor(private coleccionService: ColeccionService,
     private router: Router,
@@ -35,16 +36,26 @@ export class FormComponent implements OnInit {
     this.coleccionService.create(this.coleccion).subscribe(
       coleccion => {
         this.router.navigate(['/colecciones']);
-        swal.fire('Nueva colección', `Colección ${coleccion.nombre} creada correctamente`, 'success');
+        swal.fire('Nueva colección', `La colección ${coleccion.nombre} ha sido creada correctamente`, 'success');
+      },
+      err => {
+        this.errores = err.error.errors as string[];
+        console.error('Código del error desde el backend: ' + err.status);
+        console.error(err.error.errors);
       }
     );
   }
 
   update(): void{
     this.coleccionService.update(this.coleccion).subscribe(
-      coleccion => {
+      json => {
         this.router.navigate(['/colecciones']);
-        swal.fire('Colección actualizada', `La colección ${coleccion.nombre} se ha actualizado`, 'success');
+        swal.fire('Colección actualizada', `La colección ${json.coleccion.nombre} se ha actualizado`, 'success');
+      },
+      err => {
+        this.errores = err.error.errors as string[];
+        console.error('Código del error desde el backend: ' + err.status);
+        console.error(err.error.errors);
       }
     )
   }

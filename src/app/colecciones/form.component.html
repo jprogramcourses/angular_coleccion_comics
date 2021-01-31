@@ -1,40 +1,66 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{err}}
+    </li>
+</ul>
 <div class="card bg-dark text-white">
     <div class="card-header">{{titulo}}</div>
     <div class="card-body">
-        <form>
+        <form #coleccionForm="ngForm">
             <div class="form-group row">
                 <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="coleccion.nombre" name="nombre" />
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.nombre" name="nombre"  #nombre="ngModel" /> <!--  required
+                        minlength="3"-->
+                    <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                        <div *ngIf="nombre.errors.required">
+                            El nombre es requerido
+                        </div>
+                        <div *ngIf="nombre.errors.minlength">
+                            El nombre debe tener al menos 3 caracteres
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="numerosTotales" class="col-form-label col-sm-2">Números totales</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="coleccion.numerosTotales" name="numerosTotales" />
+                    <input type="number" class="form-control" [(ngModel)]="coleccion.numerosTotales"
+                        name="numerosTotales"  #numerosTotales="ngModel" /> <!-- min=1 -->
+                    <div class="alert alert-danger"
+                        *ngIf="numerosTotales.invalid && (numerosTotales.dirty || numerosTotales.touched)">
+                        <div *ngIf="numerosTotales.errors.min">
+                            El número de cómics de la colección debe ser al menos 1.
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="numerosDisponibles" class="col-form-label col-sm-2">Números disponibles</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="coleccion.numerosDisponibles" name="numerosDisponibles" />
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.numerosDisponibles"
+                        name="numerosDisponibles" />
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="listadoNumeros" class="col-form-label col-sm-2">Listado de números</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="coleccion.listadoNumeros" name="listadoNumeros" />
+                    <input type="text" class="form-control" [(ngModel)]="coleccion.listadoNumeros"
+                        name="listadoNumeros" />
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-sm-6">
-                    <button class="btn btn-primary" role="button" (click)='create()' *ngIf="!coleccion.idColeccion else elseBlock">Crear</button>
+                    <button class="btn btn-primary" role="button" (click)='create()'
+                        *ngIf="!coleccion.idColeccion else elseBlock"
+                        [disabled]="!coleccionForm.form.valid">Crear</button>
                     <ng-template #elseBlock>
-                        <button class="btn btn-primary" role="button" (click)='update()' >Editar</button>
+                        <button class="btn btn-primary" role="button" (click)='update()'
+                            [disabled]="!coleccionForm.form.valid">Editar</button>
                     </ng-template>
                 </div>
             </div>

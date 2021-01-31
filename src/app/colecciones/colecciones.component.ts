@@ -20,6 +20,7 @@ export class ColeccionesComponent implements OnInit {
   }
 
   delete(coleccion: Coleccion): void {
+
     Swal.fire({
       title: 'Are you sure?',
       text: `¿Está seguro de que desea eliminar la coleccion ${coleccion.nombre}?`,
