@@ -4,7 +4,7 @@ import { COLECCION } from './colecciones.json';
 import { Coleccion } from './coleccion';
 import { Observable, of, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 
@@ -26,16 +26,30 @@ export class ColeccionService {
     // Segunda forma de castear los resultados, a través de un map
     // y una función lambda:
     return this.http.get(this.urlEndPoint).pipe(
+      tap(response => {
+        let colecciones = response as Coleccion[];
+        console.log('ColeccionService: tap1');
+        colecciones.forEach(coleccion => {
+          console.log(coleccion.nombre);
+        })
+      }),
       map(response => {
         let colecciones = response as Coleccion[];
 
         return colecciones.map(coleccion => {
           coleccion.nombre = coleccion.nombre.toUpperCase();
-          let datePipe = new DatePipe('en-US');
+          let datePipe = new DatePipe('es');
+          // Opciones para formatear la fecha desde el componente. Alternativa es hacerlo en la vista
           // coleccion.createAt = formatDate(coleccion.createAt, 'dd-MM-yyyy',"en-US");
-          coleccion.createAt = datePipe.transform(coleccion.createAt, 'EEEE, dd-MM-yyyy');
+          // coleccion.createAt = datePipe.transform(coleccion.createAt, 'EEEE, dd-MM-yyyy');
           return coleccion;
         });
+      }),
+      tap(response => {
+        console.log('ColeccionService: tap2');
+        response.forEach(coleccion => {
+          console.log(coleccion.nombre);
+        })
       })
     );
   }

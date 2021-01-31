@@ -21,7 +21,7 @@
                     <td>{{coleccion.nombre}}</td>
                     <td>{{coleccion.numerosTotales}}</td>
                     <td>{{coleccion.numerosDisponibles}}</td>
-                    <td>{{coleccion.createAt}}</td>
+                    <td>{{coleccion.createAt | date: "EEEE, dd-MM-yyyy"}}</td>
                     <td><button type="button" name="editar" class="btn btn-primary" [routerLink] = "['/colecciones/form/', coleccion.idColeccion]">Editar</button></td>
                     <td><button type="button" name="eliminar" class="btn btn-danger" (click) = 'delete(coleccion)'>Eliminar</button></td>
                 </tr>

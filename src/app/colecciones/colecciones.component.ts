@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Coleccion } from './coleccion';
 import { ColeccionService } from './coleccion.service';
 import Swal from 'sweetalert2';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-colecciones',
@@ -14,7 +15,14 @@ export class ColeccionesComponent implements OnInit {
   constructor(private coleccionService: ColeccionService) { }
 
   ngOnInit(): void {
-    this.coleccionService.getColecciones().subscribe(
+    this.coleccionService.getColecciones().pipe(
+      tap(colecciones => {
+        console.log('ColeccionComponent: tap3');
+        colecciones.forEach(coleccion => {
+          console.log(coleccion.nombre);
+        });
+      })
+    ).subscribe(
       colecciones => this.colecciones = colecciones
     );
   }
@@ -45,7 +53,7 @@ export class ColeccionesComponent implements OnInit {
         Swal.fire(
           'Colección eliminada',
           `La colección ${coleccion.nombre} ha sido eliminada`,
-          `success`
+          'success'
         )
       }
     )
