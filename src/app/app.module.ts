@@ -9,9 +9,14 @@ import { ColeccionesComponent } from './colecciones/colecciones.component';
 import { Router, RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormComponent } from './colecciones/form.component';
+import { PaginatorComponent } from './paginator/paginator.component';
 import { FormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatNativeDateModule } from '@angular/material/core';
+import { DetalleComponent } from './colecciones/detalle/detalle.component';
+// import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 // Configuración del locale. Se hace aquí para que quede configurado de manera global
 registerLocaleData(localeEs, 'es');
@@ -20,6 +25,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/colecciones', pathMatch: 'full' },
   { path: 'directivas', component: DirectivaComponent },
   { path: 'colecciones', component: ColeccionesComponent },
+  { path: 'colecciones/page/:page', component: ColeccionesComponent },
   { path: 'colecciones/form', component: FormComponent },
   { path: 'colecciones/form/:id', component: FormComponent }
 ]
@@ -31,13 +37,17 @@ const routes: Routes = [
     FooterComponent,
     DirectivaComponent,
     ColeccionesComponent,
-    FormComponent
+    FormComponent,
+    PaginatorComponent,
+    DetalleComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    MatNativeDateModule
   ],
   providers: [{provide: LOCALE_ID, useValue: 'es' }],
   bootstrap: [AppComponent]

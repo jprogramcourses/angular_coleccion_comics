@@ -1,4 +1,5 @@
-<div class="card border-primary mb-3" >
+<detalle-coleccion [coleccion]="coleccionSeleccionada"></detalle-coleccion>
+<div class="card border-primary mb-3">
     <div class="card-header">Colecciones</div>
     <div class="card-body text-primary">
         <h5 class="card-title">Listado de colecciones</h5>
@@ -18,17 +19,31 @@
             </thead>
             <tbody>
                 <tr *ngFor="let coleccion of colecciones">
-                    <td>{{coleccion.nombre}}</td>
+                    <td>
+                        <img (click)="abrirModal(coleccion)" *ngIf="coleccion?.imagen"
+                            src="http://localhost:8080/apicolec/uploads/img/{{coleccion.imagen}}"
+                            class="img-thumbnail rounded" style="width: 64px; cursor: pointer;">
+                        <img (click)="abrirModal(coleccion)" *ngIf="!coleccion?.imagen"
+                            src="http://localhost:8080/images/not-user.svg" alt="Sin foto"
+                            class="img-thumbnail rounded" style="width: 64px; cursor: pointer;">
+                    </td>
+                    <!-- <td><button type="button" [routerLink] = "['/colecciones/ver/', coleccion.idColeccion]" class="btn btn-success">{{coleccion.nombre}}</button></td> -->
+                    <!-- <td><button type="button" (click)="abrirModal(coleccion)"
+                            class="btn btn-success">{{coleccion.nombre}}</button></td> -->
                     <td>{{coleccion.numerosTotales}}</td>
                     <td>{{coleccion.numerosDisponibles}}</td>
                     <td>{{coleccion.createAt | date: "EEEE, dd-MM-yyyy"}}</td>
-                    <td><button type="button" name="editar" class="btn btn-primary" [routerLink] = "['/colecciones/form/', coleccion.idColeccion]">Editar</button></td>
-                    <td><button type="button" name="eliminar" class="btn btn-danger" (click) = 'delete(coleccion)'>Eliminar</button></td>
+                    <td><button type="button" name="editar" class="btn btn-primary"
+                            [routerLink]="['/colecciones/form/', coleccion.idColeccion]">Editar</button></td>
+                    <td><button type="button" name="eliminar" class="btn btn-danger"
+                            (click)='delete(coleccion)'>Eliminar</button></td>
                 </tr>
             </tbody>
         </table>
+        <paginator-nav *ngIf="paginador" [paginador]="paginador"></paginator-nav>
         <div class="my-2 text-left">
-            <button class="btn btn-rounded btn-primary" type="button" routerLink = "/colecciones/form">Crear Colección</button>
+            <button class="btn btn-rounded btn-primary" type="button" routerLink="/colecciones/form">Crear
+                Colección</button>
         </div>
     </div>
 </div>

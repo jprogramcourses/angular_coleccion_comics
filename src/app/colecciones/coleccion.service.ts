@@ -3,7 +3,7 @@ import { formatDate, DatePipe } from '@angular/common';
 import { COLECCION } from './colecciones.json';
 import { Coleccion } from './coleccion';
 import { Observable, of, throwError } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -18,36 +18,35 @@ export class ColeccionService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  getColecciones(): Observable<Coleccion[]> {
+  getColecciones(page: number): Observable<any> {
     // return of(COLECCION);
     // Primera forma para castear los resultados recibidos del servicio rest.
     // El resultado recibido se castea con get<Coleccion[]>:
     // return this.http.get<Coleccion[]>(this.urlEndPoint);
     // Segunda forma de castear los resultados, a través de un map
     // y una función lambda:
-    return this.http.get(this.urlEndPoint).pipe(
-      tap(response => {
-        let colecciones = response as Coleccion[];
+    return this.http.get(this.urlEndPoint + '/page/' + page).pipe(
+      tap((response: any) => {
         console.log('ColeccionService: tap1');
-        colecciones.forEach(coleccion => {
+        (response.content as Coleccion[]).forEach(coleccion => {
           console.log(coleccion.nombre);
         })
       }),
-      map(response => {
-        let colecciones = response as Coleccion[];
+      map((response: any) => {
 
-        return colecciones.map(coleccion => {
+        (response.content as Coleccion[]).map(coleccion => {
           coleccion.nombre = coleccion.nombre.toUpperCase();
-          let datePipe = new DatePipe('es');
+          // let datePipe = new DatePipe('es');
           // Opciones para formatear la fecha desde el componente. Alternativa es hacerlo en la vista
           // coleccion.createAt = formatDate(coleccion.createAt, 'dd-MM-yyyy',"en-US");
           // coleccion.createAt = datePipe.transform(coleccion.createAt, 'EEEE, dd-MM-yyyy');
           return coleccion;
         });
+        return response;
       }),
       tap(response => {
         console.log('ColeccionService: tap2');
-        response.forEach(coleccion => {
+        (response.content as Coleccion[]).forEach(coleccion => {
           console.log(coleccion.nombre);
         })
       })
@@ -108,5 +107,18 @@ export class ColeccionService {
         return throwError(e);
       })
     );
+  }
+
+  subirFoto(archivo: File, idColeccion): Observable<HttpEvent<{}>> {
+    let formData = new FormData();
+    formData.append("archivo", archivo);
+    formData.append("id", idColeccion);
+
+    const req = new HttpRequest('POST', `${this.urlEndPoint}/upload`, formData, {
+      reportProgress: true
+    });
+
+    return this.http.request(req);
+      
   }
 }

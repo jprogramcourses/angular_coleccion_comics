@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Coleccion } from './coleccion';
 import { ColeccionService } from './coleccion.service';
+import { ModalService } from './detalle/modal.service';
 import Swal from 'sweetalert2';
 import { tap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-colecciones',
@@ -11,20 +13,49 @@ import { tap } from 'rxjs/operators';
 export class ColeccionesComponent implements OnInit {
 
   colecciones: Coleccion[];
+  paginador: any;
+  coleccionSeleccionada: Coleccion;
 
-  constructor(private coleccionService: ColeccionService) { }
+  constructor(private coleccionService: ColeccionService,
+    private modalService: ModalService,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.coleccionService.getColecciones().pipe(
-      tap(colecciones => {
-        console.log('ColeccionComponent: tap3');
-        colecciones.forEach(coleccion => {
-          console.log(coleccion.nombre);
-        });
+
+    // el activatedRoute se encarga de suscribir para comprobar cuándo cambia el parámetro
+    // page en la ruta, para actualizar los valores
+    this.activatedRoute.paramMap.subscribe(params => {
+      let page: number = +params.get('page');
+
+      // Al comenzar, si page no tiene valor, se asigna automáticamente 0
+      if (!page) {
+        page = 0;
+      }
+
+      this.coleccionService.getColecciones(page)
+        .pipe(
+          tap(response => {
+            console.log('ColeccionComponent: tap3');
+            (response.content as Coleccion[]).forEach(coleccion => {
+              console.log(coleccion.nombre);
+            });
+          })
+        ).subscribe(
+          response => {
+            this.colecciones = response.content as Coleccion[];
+            this.paginador = response;
+          });
+    }
+    )
+
+    this.modalService.notificarUpload.subscribe(coleccion => {
+      this.colecciones = this.colecciones.map(coleccionOriginal => {
+        if(coleccion.idColeccion == coleccionOriginal.idColeccion){
+          coleccionOriginal.imagen = coleccion.imagen;
+        }
+        return coleccionOriginal;
       })
-    ).subscribe(
-      colecciones => this.colecciones = colecciones
-    );
+    })
   }
 
   delete(coleccion: Coleccion): void {
@@ -57,6 +88,12 @@ export class ColeccionesComponent implements OnInit {
         )
       }
     )
+  }
+
+  abrirModal(coleccion: Coleccion) {
+    this.coleccionSeleccionada = coleccion;
+    console.log("Abrir modal con " + this.coleccionSeleccionada.nombre);
+    this.modalService.abrirModal();
   }
 
 }

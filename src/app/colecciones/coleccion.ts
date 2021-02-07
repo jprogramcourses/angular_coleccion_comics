@@ -6,5 +6,5 @@ export class Coleccion {
     numerosDisponibles: number;
     listadoNumeros: number[];
     createAt: string;
-
+    imagen: string;
 }
