@@ -3,6 +3,7 @@ import { Coleccion } from './coleccion';
 import { ColeccionService } from './coleccion.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
+import { Creador } from './creador';
 
 @Component({
   selector: 'app-form',
@@ -11,6 +12,7 @@ import swal from 'sweetalert2';
 export class FormComponent implements OnInit {
 
   coleccion: Coleccion = new Coleccion();
+  creadores: Creador[];
   titulo: string = 'Nueva Colección';
 
   errores: string[];
@@ -21,18 +23,23 @@ export class FormComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarColeccion();
+
+    this.coleccionService.getCreadores().subscribe(creadores => {
+      this.creadores = creadores;
+    });
   }
 
-  cargarColeccion() : void{
+  cargarColeccion(): void {
     this.activatedRoute.params.subscribe(params => {
       let id = params['id'];
-      if(id){
+      if (id) {
         this.coleccionService.getColeccion(id).subscribe((coleccion) => this.coleccion = coleccion);
       }
     })
   }
 
   public create(): void {
+    console.log(this.coleccion);
     this.coleccionService.create(this.coleccion).subscribe(
       coleccion => {
         this.router.navigate(['/colecciones']);
@@ -46,7 +53,8 @@ export class FormComponent implements OnInit {
     );
   }
 
-  update(): void{
+  update(): void {
+    console.log(this.coleccion);
     this.coleccionService.update(this.coleccion).subscribe(
       json => {
         this.router.navigate(['/colecciones']);
@@ -58,6 +66,15 @@ export class FormComponent implements OnInit {
         console.error(err.error.errors);
       }
     )
+  }
+
+  compararCreador(o1: Creador, o2: Creador): boolean {
+    if(o1 === undefined && o2 === undefined){
+      return true;
+    }
+
+    // return o1 === null || o2 === null || o1 === undefined || o2 === undefined ? false : o1.id === o2.id;
+    return o1 == null || o2 == null ? false : o1.id === o2.id;
   }
 
 }

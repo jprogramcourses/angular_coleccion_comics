@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common
 import { map, catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { Creador } from './creador';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,10 @@ export class ColeccionService {
   private httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private http: HttpClient, private router: Router) { }
+
+  getCreadores(): Observable<Creador[]>{
+    return this.http.get<Creador[]>(this.urlEndPoint + '/creadores');
+  }
 
   getColecciones(page: number): Observable<any> {
     // return of(COLECCION);

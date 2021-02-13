@@ -1,3 +1,5 @@
+import { Creador } from "./creador";
+
 export class Coleccion {
 
     idColeccion: number;
@@ -7,4 +9,5 @@ export class Coleccion {
     listadoNumeros: number[];
     createAt: string;
     imagen: string;
+    creador: Creador
 }
