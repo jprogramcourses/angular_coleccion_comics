@@ -21,7 +21,7 @@
                                     <li class="list-group-item">{{coleccion.creador.nombre}}</li>
                                 </ul>
 
-                                <div class="input-group mb-3">
+                                <div class="input-group mb-3" *ngIf="authService.hasRole('ROLE_ADMIN')">
                                     <div class="custom-file">
                                         <input (change)="seleccionarFoto($event)" class="custom-file-input" type="file"
                                             id="formFile">

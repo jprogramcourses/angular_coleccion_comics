@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 import { ModalService } from './modal.service';
+import { AuthService } from 'src/app/usuarios/auth.service';
 
 @Component({
   selector: 'detalle-coleccion',
@@ -18,11 +19,14 @@ export class DetalleComponent implements OnInit {
   fotoSeleccionada: File;
   modalService: ModalService;
   progreso: number = 0;
+  authService: AuthService;
 
   constructor(private coleccionService: ColeccionService,
     modalService: ModalService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    authService: AuthService) {
       this.modalService = modalService;
+      this.authService = authService;
   }
 
   ngOnInit() {

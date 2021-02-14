@@ -16,7 +16,10 @@ import localeEs from '@angular/common/locales/es';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatNativeDateModule } from '@angular/material/core';
 import { DetalleComponent } from './colecciones/detalle/detalle.component';
+import { LoginComponent } from './usuarios/login.component';
+import { AuthGuard } from './usuarios/guards/auth.guard';
 // import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { RoleGuard } from './usuarios/guards/role.guard';
 
 // Configuración del locale. Se hace aquí para que quede configurado de manera global
 registerLocaleData(localeEs, 'es');
@@ -26,8 +29,9 @@ const routes: Routes = [
   { path: 'directivas', component: DirectivaComponent },
   { path: 'colecciones', component: ColeccionesComponent },
   { path: 'colecciones/page/:page', component: ColeccionesComponent },
-  { path: 'colecciones/form', component: FormComponent },
-  { path: 'colecciones/form/:id', component: FormComponent }
+  { path: 'colecciones/form', component: FormComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'ROLE_ADMIN'} },
+  { path: 'colecciones/form/:id', component: FormComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'ROLE_ADMIN'} },
+  { path: 'login', component: LoginComponent }
 ]
 
 @NgModule({
@@ -39,7 +43,8 @@ const routes: Routes = [
     ColeccionesComponent,
     FormComponent,
     PaginatorComponent,
-    DetalleComponent
+    DetalleComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

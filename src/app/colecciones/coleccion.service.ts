@@ -8,6 +8,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { Creador } from './creador';
+import { AuthService } from '../usuarios/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,44 @@ export class ColeccionService {
   private urlEndPoint: string = 'http://localhost:8080/apicolec/colecciones';
   private httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
 
-  getCreadores(): Observable<Creador[]>{
-    return this.http.get<Creador[]>(this.urlEndPoint + '/creadores');
+  private agregarAutorizationHeader(){
+    let token = this.authService.token;
+    if(token != null){
+      return this.httpHeaders.append('Authorization', 'Bearer ' + token);
+    }
+    return this.httpHeaders;
+  }
+
+  private isNoAutorizado(e): boolean {
+    if (e.status == 401) {
+
+      if(this.authService.isAuthenticated()){
+        this.authService.logout();
+      }
+
+      this.router.navigate(['/login']);
+      return true;
+    }
+
+    if (e.status == 403) {
+      swal.fire('Acceso denegado', `Hola ${this.authService.usuario.username}, no tienes permiso`, 'warning');
+      this.router.navigate(['/colecciones']);
+      return true;
+    }
+
+    return false;
+  }
+
+  getCreadores(): Observable<Creador[]> {
+    return this.http.get<Creador[]>(this.urlEndPoint + '/creadores', {headers: this.agregarAutorizationHeader()})
+      .pipe(
+        catchError(e => {
+          this.isNoAutorizado(e);
+          return throwError(e);
+        })
+      );
   }
 
   getColecciones(page: number): Observable<any> {
@@ -59,9 +94,13 @@ export class ColeccionService {
   }
 
   create(coleccion: Coleccion): Observable<Coleccion> {
-    return this.http.post(this.urlEndPoint, coleccion, { headers: this.httpHeaders }).pipe(
+    return this.http.post(this.urlEndPoint, coleccion, { headers: this.agregarAutorizationHeader() }).pipe(
       map((response: any) => response.coleccion as Coleccion),
       catchError(e => {
+
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
 
         // Se envían los errores al componente, para que los gestione
         if (e.status == 400) {
@@ -76,8 +115,12 @@ export class ColeccionService {
   }
 
   getColeccion(id): Observable<Coleccion> {
-    return this.http.get<Coleccion>(`${this.urlEndPoint}/${id}`).pipe(
+    return this.http.get<Coleccion>(`${this.urlEndPoint}/${id}`, {headers: this.agregarAutorizationHeader()}).pipe(
       catchError(e => {
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
+
         this.router.navigate(['/colecciones']);
         console.error(e);
         swal.fire(e.error.mensaje, e.error.error, 'error');
@@ -89,8 +132,12 @@ export class ColeccionService {
   update(coleccion: Coleccion): Observable<any> {
     return this.http.put<any>(`${this.urlEndPoint}/${coleccion.idColeccion}`,
       coleccion,
-      { headers: this.httpHeaders }).pipe(
+      { headers: this.agregarAutorizationHeader() }).pipe(
         catchError(e => {
+
+          if (this.isNoAutorizado(e)) {
+            return throwError(e);
+          }
 
           // Se envían los errores al componente, para que los gestione
           if (e.status == 400) {
@@ -105,8 +152,12 @@ export class ColeccionService {
   }
 
   delete(id: number): Observable<Coleccion> {
-    return this.http.delete<Coleccion>(`${this.urlEndPoint}/${id}`, { headers: this.httpHeaders }).pipe(
+    return this.http.delete<Coleccion>(`${this.urlEndPoint}/${id}`, { headers: this.agregarAutorizationHeader() }).pipe(
       catchError(e => {
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
+
         console.error(e.error.mensaje);
         swal.fire(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
@@ -119,11 +170,23 @@ export class ColeccionService {
     formData.append("archivo", archivo);
     formData.append("id", idColeccion);
 
+    let httpHeaders = new HttpHeaders();
+    let token = this.authService.token;
+    if(token != null){
+      httpHeaders = httpHeaders.append('Authorization', 'Bearer ' + token);
+    }
+
     const req = new HttpRequest('POST', `${this.urlEndPoint}/upload`, formData, {
-      reportProgress: true
+      reportProgress: true,
+      headers: httpHeaders
     });
 
-    return this.http.request(req);
-      
+    return this.http.request(req).pipe(
+      catchError(e => {
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+
   }
 }

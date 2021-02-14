@@ -5,6 +5,7 @@ import { ModalService } from './detalle/modal.service';
 import Swal from 'sweetalert2';
 import { tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../usuarios/auth.service';
 
 @Component({
   selector: 'app-colecciones',
@@ -15,10 +16,14 @@ export class ColeccionesComponent implements OnInit {
   colecciones: Coleccion[];
   paginador: any;
   coleccionSeleccionada: Coleccion;
+  authService: AuthService;
 
   constructor(private coleccionService: ColeccionService,
     private modalService: ModalService,
-    private activatedRoute: ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute,
+    authService: AuthService) {
+      this.authService = authService;
+     }
 
   ngOnInit(): void {
 
