@@ -1,0 +1,1 @@
+export const URL_BACKEND = 'https://app-comics-forum.herokuapp.com';

@@ -20,6 +20,14 @@
             </thead>
             <tbody>
                 <tr *ngFor="let coleccion of colecciones">
+                    <!-- <td *ngIf="authService.hasRole('ROLE_USER')">
+                        <img (click)="abrirModal(coleccion)" *ngIf="coleccion?.imagen"
+                            src="{{urlBackend}}/apicolec/uploads/img/{{coleccion.imagen}}"
+                            class="img-thumbnail rounded" style="width: 64px; cursor: pointer;">
+                        <img (click)="abrirModal(coleccion)" *ngIf="!coleccion?.imagen"
+                            src="{{urlBackend}}/images/not-user.svg" alt="Sin foto"
+                            class="img-thumbnail rounded" style="width: 64px; cursor: pointer;">
+                    </td> -->
                     <td *ngIf="authService.hasRole('ROLE_USER')">
                         <img (click)="abrirModal(coleccion)" *ngIf="coleccion?.imagen"
                             src="http://localhost:8080/apicolec/uploads/img/{{coleccion.imagen}}"

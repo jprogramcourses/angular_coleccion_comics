@@ -9,20 +9,22 @@ import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { Creador } from './creador';
 import { AuthService } from '../usuarios/auth.service';
+import { URL_BACKEND } from '../config/config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColeccionService {
 
+  // private urlEndPoint: string = URL_BACKEND + '/apicolec/colecciones';
   private urlEndPoint: string = 'http://localhost:8080/apicolec/colecciones';
   private httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
 
-  private agregarAutorizationHeader(){
+  private agregarAutorizationHeader() {
     let token = this.authService.token;
-    if(token != null){
+    if (token != null) {
       return this.httpHeaders.append('Authorization', 'Bearer ' + token);
     }
     return this.httpHeaders;
@@ -31,7 +33,7 @@ export class ColeccionService {
   private isNoAutorizado(e): boolean {
     if (e.status == 401) {
 
-      if(this.authService.isAuthenticated()){
+      if (this.authService.isAuthenticated()) {
         this.authService.logout();
       }
 
@@ -49,7 +51,7 @@ export class ColeccionService {
   }
 
   getCreadores(): Observable<Creador[]> {
-    return this.http.get<Creador[]>(this.urlEndPoint + '/creadores', {headers: this.agregarAutorizationHeader()})
+    return this.http.get<Creador[]>(this.urlEndPoint + '/creadores', { headers: this.agregarAutorizationHeader() })
       .pipe(
         catchError(e => {
           this.isNoAutorizado(e);
@@ -115,7 +117,7 @@ export class ColeccionService {
   }
 
   getColeccion(id): Observable<Coleccion> {
-    return this.http.get<Coleccion>(`${this.urlEndPoint}/${id}`, {headers: this.agregarAutorizationHeader()}).pipe(
+    return this.http.get<Coleccion>(`${this.urlEndPoint}/${id}`, { headers: this.agregarAutorizationHeader() }).pipe(
       catchError(e => {
         if (this.isNoAutorizado(e)) {
           return throwError(e);
@@ -172,7 +174,7 @@ export class ColeccionService {
 
     let httpHeaders = new HttpHeaders();
     let token = this.authService.token;
-    if(token != null){
+    if (token != null) {
       httpHeaders = httpHeaders.append('Authorization', 'Bearer ' + token);
     }
 
